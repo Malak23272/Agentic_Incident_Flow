@@ -16,19 +16,22 @@ def update_incident(sys_id: str, decision: str, message: str):
     
     # Map the decision to the specific ServiceNow table fields
     if decision == "respond":
+        # Mentor Requirement: Move ticket to Resolved (State 6)
         payload = {
-            "state": "6", # 6 is the integer state code for 'Resolved' in ServiceNow
-            "close_code": "Solution provided",
+            "state": "6", 
+            "close_code": "Software", # Required by ServiceNow to close a ticket
             "close_notes": message,
-            "comments": message 
+            "comments": f"AI Resolution:\n{message}"
         }
     elif decision == "ask":
+        # Mentor Requirement: Leave open (do not send state), just add comment
         payload = {
             "comments": message 
         }
     elif decision == "escalate":
+        # Leave open, add internal work note for human agents
         payload = {
-            "work_notes": f"Escalated by AI: {message}" 
+            "work_notes": f"Escalated by AI:\n{message}" 
         }
         
    # Send the PATCH request to update the ticket
